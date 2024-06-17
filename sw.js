@@ -1,10 +1,9 @@
     const DEBUG_SERVER_WORKER = true;
-    const scriptVersion = "v2024.28005";
+    const scriptVersion = "v0.26";
     const home = new Request("./").url;
-    const beta = /renju\-beta$|renju\-beta\/$/.test(home) && "Beta" || "";
     const VERSION_JSON = new Request("./Version/SOURCE_FILES.json").url;
-    const currentCacheKey = "currentCache" + beta; 
-    const updataCacheKey = "updataCache" + beta; 
+    const currentCacheKey = "currentCache" + "gomocalc" + scriptVersion; 
+    const updataCacheKey = "updataCache" + "gomocalc" + scriptVersion; 
     const refreshVersionInterval = 3600 * 1000;
     const firstUpdateCacheDelay = 3 * 3600 * 1000;
     const CacheStatus = {
