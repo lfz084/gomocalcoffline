@@ -1295,13 +1295,13 @@
 			})).catch((function(t) { return console.error("Failed to import MTEngine: " + t) }));
 			else {
 				if (Cn != kn.WebAssemblyWorker) throw new Error("Invalid engine type: " + Cn);
-				yn = new mn, yn.onmessage = function(t) { /*console.info(`onmessage: ${JSON.stringify(t.data)}`);*/ null != t.data.ready ? bn({ ok: !0 }) : null != t.data.stdout ? Pn(t.data.stdout) : "alert" == t.data.command && alert(t.data.arg)}, yn.onerror = function(e) { yn.terminate(), console.error("Worker error [" + e.message + "]. Retry after 250ms..."), setTimeout((function() { return On(t) }), 250) }, yn.postMessage({ engineScriptURL: Sn })
+				yn = new mn, yn.onmessage = function(t) { null != t.data.ready ? bn({ ok: !0 }) : null != t.data.stdout ? Pn(t.data.stdout) : "alert" == t.data.command && alert(t.data.arg)}, yn.onerror = function(e) { yn.terminate(), console.error("Worker error [" + e.message + "]. Retry after 250ms..."), setTimeout((function() { return On(t) }), 250) }, yn.postMessage({ engineScriptURL: Sn })
 			}
 		}
 
 		function Tn() { return Cn == kn.WebAssembly ? (Mn("YXSTOP"), !1) : Cn == kn.WebAssemblyWorker ? (console.warn("No support for SAB, will stop by terminating worker."), yn.terminate(), On(bn), !0) : void 0 }
 
-		function Mn(t) { "string" === typeof t && 0 != t.length && (Cn == kn.WebAssembly ? yn.sendCommand(t) : Cn == kn.WebAssemblyWorker && yn.postMessage({ command: t }) /*|| console.info(`postMessage: ${t}`)*/) }
+		function Mn(t) { "string" === typeof t && 0 != t.length && (Cn == kn.WebAssembly ? yn.sendCommand(t) : Cn == kn.WebAssemblyWorker && yn.postMessage({ command: t }), console.info(`postMessage: ${t}`)) }
 
 		function Pn(t) {
 			var e = t.indexOf(" ");
@@ -1421,6 +1421,7 @@
 						n = t.dispatch,
 						i = t.state;
 					On((function(t) {
+						console.log(`onmessage: ${JSON.stringify(t)}`)
 						if (t.realtime) switch (t.realtime.type) {
 							case "REFRESH":
 								e("clearRealtime", "thinking"), e("clearRealtime", "thought");
