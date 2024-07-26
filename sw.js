@@ -1,5 +1,5 @@
     const DEBUG_SERVER_WORKER = true;
-    const scriptVersion = "v0.26";
+    const scriptVersion = "v0.26.001";
     const home = new Request("./").url;
     const VERSION_JSON = new Request("./Version/SOURCE_FILES.json").url;
     const currentCacheKey = "currentCache" + "gomocalc" + scriptVersion; 
@@ -800,6 +800,33 @@
     	}
     });
     
+    async function deleteCache(cacheKey) {
+		return caches.open(cacheKey)
+			.then(cache => cache.keys().then(requests => {
+				const ps = [];
+				requests.map(request => ps.push(cache.delete(request)));
+				return Promise.all(ps);
+			}))
+			.then(() => caches.delete(cacheKey))
+	}
+		
+	async function removeOldVersion() {
+		return "caches" in self &&
+			caches.keys()
+			.then(keys => {
+				const ps = [];
+				keys.map(key => {
+					if (key.indexOf("gomocalc") > -1 
+						&& key != currentCacheKey 
+						&& key != updataCacheKey) {
+						ps.push(deleteCache(key))
+					}
+				})
+				return Promise.all(ps);
+			})
+	}
+		
+    
     //---------------------- load --------------------------------
     
     postMsg({
@@ -811,3 +838,4 @@
     loadUpdateVersionInfo(currentClient);
     localCache.getItem("lastRefreshTime").then(v => lastRefreshTime = (v && v * 1 || 0))
     localCache.getItem("createTime").then(v => v * 1 ? (createTime = v * 1) : (createTime = new Date().getTime(), localCache.setItem("createTime", createTime)))
+    removeOldVersion();
